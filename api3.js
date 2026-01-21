@@ -5,7 +5,17 @@ const loadData=()=>{
     .catch(err => console.error("Error loading details:", err));
     
 };
+
+const removeActiveClass = () => {
+    const buttons = document.getElementsByClassName("btn-category");
+    for (let btn of buttons) {
+        btn.classList.remove("active");
+    }
+};
 const loadFoodsBycategory=(id)=>{
+    removeActiveClass();
+    const currentBtn=document.getElementById(`cat-btn-${id}`);
+    currentBtn.classList.add('active');
     fetch(` https://taxi-kitchen-api.vercel.app/api/v1/categories/${id}`)
     .then((res)=>res.json())
     .then((data)=>displayFoodsBycategory(data.foods))
@@ -18,7 +28,7 @@ const displaydata=(categories)=>{
     categories.forEach(category=>{
         const categoryCard=document.createElement('div');
         categoryCard.innerHTML=`
-        <button onclick="loadFoodsBycategory('${category.id}')" class="btn justify-start btn-block shadow btn-category">
+        <button id="cat-btn-${category.id}" onclick="loadFoodsBycategory('${category.id}')" class="btn justify-start btn-block shadow btn-category">
             <img
               src="${category.categoryImg}"
               alt=""
