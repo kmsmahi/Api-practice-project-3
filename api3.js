@@ -2,13 +2,14 @@ const loadData=()=>{
     fetch(' https://taxi-kitchen-api.vercel.app/api/v1/categories')
     .then((res)=>res.json())
     .then(data=>displaydata(data.categories))
-    .error(err=>console.log(err))
+    .catch(err => console.error("Error loading details:", err));
+    
 };
 const loadFoodsBycategory=(id)=>{
     fetch(` https://taxi-kitchen-api.vercel.app/api/v1/categories/${id}`)
     .then((res)=>res.json())
     .then((data)=>displayFoodsBycategory(data.foods))
-    .error(err=>console.log(err))
+    
 };
 const displaydata=(categories)=>{
     const categoryContainer=document.getElementById('category-container');
@@ -28,14 +29,45 @@ const displaydata=(categories)=>{
         categoryContainer.appendChild(categoryCard);
     })
 
+};
+
+const loadFoodDetails=(id)=>{
+    fetch(` https://taxi-kitchen-api.vercel.app/api/v1/foods/${id}`)
+    .then((res)=>res.json())
+    .then((data)=>displayFoodDetails(data.details))
 }
+const randomfoods=()=>{
+    fetch(' https://taxi-kitchen-api.vercel.app/api/v1/foods/random')
+    .then((res)=>res.json())
+    .then((data)=>displayFoodsBycategory(data.foods))
+    
+};
+
+const displayFoodDetails=(food)=>{
+    const modalDetails=document.getElementById('foodDetails-container');
+    if(!food) return;
+    modalDetails.innerHTML=`
+    <img src="${food.foodImg}" alt="${food.title}" class="w-full rounded-lg mb-4">
+        <h2 class="text-xl font-bold">${food.title}</h2>
+        <p class="font-semibold text-lg">Price: ${food.price} BDT</p>
+        <p><strong>Category:</strong> ${food.category}</p>
+        <p><strong>Area:</strong> ${food.area || 'General'}</p>
+        <div class="mt-4">
+             <a href="${food.video}" target="_blank" class="btn btn-sm btn-outline btn-error">Watch Video</a>
+        </div>
+    `;
+    const myModal = document.getElementById('my_modal_1');
+    myModal.showModal();
+
+
+};
 const displayFoodsBycategory=(foods)=>{
     const foodContainer=document.getElementById('food-container');
     foodContainer.innerHTML='';
     foods.forEach(food=>{
         const foodCard=document.createElement('div');
         foodCard.innerHTML=`
-        <div class="p-5 bg-white flex gap-3 shadow rounded-xl">
+        <div onclick="loadFoodDetails(${food.id})" class="p-5 bg-white flex gap-3 shadow rounded-xl">
             <div class="img flex-1">
               <img
                 src="${food.foodImg}"
@@ -55,6 +87,9 @@ const displayFoodsBycategory=(foods)=>{
                   $ <span class="price">${food.price}</span> BDT
                 </h2>
               </div>
+              <button onclick="displayFoodDetails(${JSON.stringify(food).split('"').join("&quot;")})" class="btn btn-warning">
+              View Details
+              </button>
 
               <button class="btn btn-warning">
                 <i class="fa-solid fa-square-plus"></i>
@@ -66,4 +101,6 @@ const displayFoodsBycategory=(foods)=>{
         foodContainer.appendChild(foodCard);
     })
 }
+
 loadData();
+randomfoods();
