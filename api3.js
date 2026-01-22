@@ -6,6 +6,9 @@ const loadData=()=>{
     
 };
 
+const cart=[];
+let total=0;
+
 const removeActiveClass = () => {
     const buttons = document.getElementsByClassName("btn-category");
     for (let btn of buttons) {
@@ -97,11 +100,11 @@ const displayFoodsBycategory=(foods)=>{
                   $ <span class="price">${food.price}</span> BDT
                 </h2>
               </div>
-              <button onclick="displayFoodDetails(${JSON.stringify(food).split('"').join("&quot;")})" class="btn btn-warning">
+              <button onclick="event.stopPropagation(); displayFoodDetails(${JSON.stringify(food).split('"').join("&quot;")})" class="btn btn-warning">
               View Details
               </button>
 
-              <button onclick="addToCart(this)" class="btn btn-warning ">
+              <button onclick="addToCart(this,event)" class="btn btn-warning ">
                 <i class="fa-solid fa-square-plus"></i>
                 Add This Item
               </button>
@@ -116,10 +119,49 @@ loadData();
 randomfoods();
 
 
-const addToCart=(e)=>{
+const addToCart=(e,event)=>{
+   event.stopPropagation();
    const card=e.parentNode.parentNode;
    const foodTitle=card.querySelector('.food-title').innerText;
    const foodPrice=card.querySelector('.price').innerText;
    const foodimage=card.querySelector('.food-img').src;
    console.log(foodTitle,foodPrice,foodimage);
+    const foodItem={
+      title:foodTitle,
+      image:foodimage,
+      price:parseFloat(foodPrice)
+    };
+    cart.push(foodItem);
+    dicplayCart();
+};
+
+const dicplayCart=()=>{
+    const newCart=document.getElementById('cart-container');
+    newCart.innerHTML='';
+    cart.forEach((item)=>{
+        const cartItem=document.createElement('div');
+        cartItem.innerHTML=`
+        <div class="p-5 bg-white flex gap-3 shadow rounded-xl">
+            <div class="img flex-1">
+              <img
+                src="${item.image}"
+                alt=""
+                class="w-[160px] rounded-xl h-[160px] object-cover"
+              />
+            </div>
+            <div class="flex-2">
+              <h1 class="text-xl font-bold">
+                ${item.title}
+              </h1>
+              <div class="badge badge-warning">Category</div>
+              <div class="divider divider-end">
+                <h2 class="text-yellow-600 font-semibold">
+                  $ <span class="price">${item.price}</span> BDT
+                </h2>
+              </div>
+            </div>
+          </div>
+        `;
+        newCart.appendChild(cartItem);
+    })
 }
