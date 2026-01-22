@@ -82,11 +82,11 @@ const displayFoodsBycategory=(foods)=>{
               <img
                 src="${food.foodImg}"
                 alt=""
-                class="w-[160px] rounded-xl h-[160px] object-cover"
+                class="w-[160px] rounded-xl h-[160px] object-cover food-img"
               />
             </div>
             <div class="flex-2">
-              <h1 class="text-xl font-bold">
+              <h1 class="text-xl font-bold food-title">
                 ${food.title}
               </h1>
 
@@ -101,7 +101,7 @@ const displayFoodsBycategory=(foods)=>{
               View Details
               </button>
 
-              <button class="btn btn-warning">
+              <button onclick="addToCart(this)" class="btn btn-warning ">
                 <i class="fa-solid fa-square-plus"></i>
                 Add This Item
               </button>
@@ -114,3 +114,12 @@ const displayFoodsBycategory=(foods)=>{
 
 loadData();
 randomfoods();
+
+
+const addToCart=(e)=>{
+   const card=e.parentNode.parentNode;
+   const foodTitle=card.querySelector('.food-title').innerText;
+   const foodPrice=card.querySelector('.price').innerText;
+   const foodimage=card.querySelector('.food-img').src;
+   console.log(foodTitle,foodPrice,foodimage);
+}
