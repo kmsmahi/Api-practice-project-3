@@ -6,7 +6,7 @@ const loadData=()=>{
     
 };
 
-const cart=[];
+let cart=[];
 let total=0;
 
 const removeActiveClass = () => {
@@ -125,21 +125,29 @@ const addToCart=(e,event)=>{
    const foodTitle=card.querySelector('.food-title').innerText;
    const foodPrice=card.querySelector('.price').innerText;
    const foodimage=card.querySelector('.food-img').src;
-   console.log(foodTitle,foodPrice,foodimage);
+  //  console.log(foodTitle,foodPrice,foodimage);
     const foodItem={
       title:foodTitle,
       image:foodimage,
       price:parseFloat(foodPrice)
     };
     cart.push(foodItem);
+    total+=foodItem.price;
     dicplayCart();
+    displayTotal(total);
 };
+const displayTotal=(val)=>{
+    const totalContainer=document.querySelector('.cart-total');
+    totalContainer.innerText=val.toFixed(2);
+    
+}
 
 const dicplayCart=()=>{
     const newCart=document.getElementById('cart-container');
     newCart.innerHTML='';
-    cart.forEach((item)=>{
+    cart.forEach((item,index)=>{
         const cartItem=document.createElement('div');
+        cartItem.classList.add("mb-4", "border-b", "pb-4");
         cartItem.innerHTML=`
         <div class="p-5 bg-white flex gap-3 shadow rounded-xl">
             <div class="img flex-1">
@@ -160,8 +168,22 @@ const dicplayCart=()=>{
                 </h2>
               </div>
             </div>
+            
           </div>
+          <button onclick="deleteFromCart(${index})" class="btn btn-error btn-sm mt-2">
+            <i class="fa-solid fa-trash"></i> Delete This Item
+          </button>
         `;
         newCart.appendChild(cartItem);
     })
-}
+};
+const deleteFromCart = (index) => {
+    total -= cart[index].price;
+    cart.splice(index, 1);
+    displayTotal(total);
+    dicplayCart();
+};
+const deleteToCart=(e)=>{
+    const deleteItem=e.parentNode;
+    deleteItem.remove();
+};
